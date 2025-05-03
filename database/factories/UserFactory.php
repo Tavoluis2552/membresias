@@ -27,7 +27,7 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'username' => fake()->unique()->userName(),
-            'photo' => 'foto.jpg',
+            'photo' => fake()->imageUrl(640, 480, 'people'),
             'email' => fake()->unique()->safeEmail(),
             'local_id' => Local::factory(),
             'status' => fake()->boolean(),
