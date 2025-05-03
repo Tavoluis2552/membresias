@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\Local;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -18,13 +19,16 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register()
     {
+        $local = Local::factory()->create();
         $response = $this->post('/register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
             'username' => 'testuser',
             'photo' => 'https://example.com/photo.jpg',
+            'local_id' => $local->id,
             'password' => 'password',
             'password_confirmation' => 'password',
+            'status' => true,
         ]);
 
         $this->assertAuthenticated();
