@@ -38,12 +38,16 @@ class UserSeeder extends Seeder
             'username' => 'junior15',
             'email' => 'junior@gmail.com',
             'local_id' => 1,
-            'photo' => 'foto2.jpg',
+            'photo' => 'foto.jpg',
             'password' => Hash::make('password'),
         ]);
 
         $adminRole->syncPermissions($permissions);
         $admin_1->assignRole($adminRole);
         $admin_2->assignRole($adminRole);
+
+        User::factory()->count(100)->create()->each(function ($user) use ($personalRole) {
+            $user->assignRole($personalRole);
+        });
     }
 }

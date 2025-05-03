@@ -9,6 +9,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 
 class UserController extends Controller
 {
@@ -19,14 +20,26 @@ class UserController extends Controller
     public function listUsers()
     {
         Gate::authorize('viewAny', User::class);
-        $users = User::with('local')->where('status', true)->paginate(1);
+        $users = User::with('local')->where('status', true)->paginate(10);
         return response()->json([
+            'success' => true,
             'users' => UserResource::collection($users),
+            'pagination' => [
+                'total' => $users->total(),
+                'current_page' => $users->currentPage(),
+                'per_page' => $users->perPage(),
+                'last_page' => $users->lastPage(),
+                'from' => $users->firstItem(),
+                'to' => $users->lastItem()
+            ],
         ]);
     }
 
 
-    public function index() {}
+    public function index()
+    {
+        return Inertia::render('Panel/Users/indexUser');
+    }
 
     /**
      * Show the form for creating a new resource.
