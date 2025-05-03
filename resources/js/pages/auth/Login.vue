@@ -15,7 +15,7 @@ defineProps<{
 }>();
 
 const form = useForm({
-    email: '',
+    username: '',
     password: '',
     remember: false,
 });
@@ -28,7 +28,7 @@ const submit = () => {
 </script>
 
 <template>
-    <AuthBase title="Log in to your account" description="Enter your email and password below to log in">
+    <AuthBase title="Log in to your account" description="Enter your username and password below to log in">
         <Head title="Log in" />
 
         <div v-if="status" class="mb-4 text-center text-sm font-medium text-green-600">
@@ -38,18 +38,18 @@ const submit = () => {
         <form @submit.prevent="submit" class="flex flex-col gap-6">
             <div class="grid gap-6">
                 <div class="grid gap-2">
-                    <Label for="email">Email address</Label>
+                    <Label for="username">usuario</Label>
                     <Input
-                        id="email"
-                        type="email"
+                        id="username"
+                        type="text"
                         required
                         autofocus
                         :tabindex="1"
-                        autocomplete="email"
-                        v-model="form.email"
-                        placeholder="email@example.com"
+                        autocomplete="username"
+                        v-model="form.username"
+                        placeholder="username"
                     />
-                    <InputError :message="form.errors.email" />
+                    <InputError :message="form.errors.username" />
                 </div>
 
                 <div class="grid gap-2">
@@ -80,11 +80,11 @@ const submit = () => {
 
                 <Button type="submit" class="mt-4 w-full" :tabindex="4" :disabled="form.processing">
                     <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
-                    Log in
+                    Ingresar
                 </Button>
             </div>
 
-            <div class="text-center text-sm text-muted-foreground">
+            <div class="text-muted-foreground text-center text-sm">
                 Don't have an account?
                 <TextLink :href="route('register')" :tabindex="5">Sign up</TextLink>
             </div>
