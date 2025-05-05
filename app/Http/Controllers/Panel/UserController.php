@@ -19,7 +19,7 @@ class UserController extends Controller
 
     public function listUsers()
     {
-        Gate::authorize('viewAny', User::class);
+        //Gate::authorize('viewAny', User::class);
         $users = User::with('local')->where('status', true)->paginate(10);
         return response()->json([
             'success' => true,
@@ -38,6 +38,7 @@ class UserController extends Controller
 
     public function index()
     {
+        Gate::authorize('viewAny', User::class, User::class);
         return Inertia::render('Panel/Users/indexUser');
     }
 

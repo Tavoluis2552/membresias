@@ -21,10 +21,15 @@ class UserSeeder extends Seeder
         $personalRole = Role::findById(2);
 
 
-        // get the permissions 
+        // get the permissions for the admin
         $permissions = Permission::all()->pluck('name')->toArray();
-
-
+        // create the permissions for personal
+        $personalPermissions = [
+            //'ver usuarios',
+            'crear usuarios',
+            'editar usuarios',
+            'eliminar usuarios',
+        ];
         $admin_1 = User::create([
             'name' => 'Gustavo Siancas',
             'username' => 'gustavo25',
@@ -43,8 +48,9 @@ class UserSeeder extends Seeder
         ]);
 
         $adminRole->syncPermissions($permissions);
+        $personalRole->syncPermissions($personalPermissions);
         $admin_1->assignRole($adminRole);
-        $admin_2->assignRole($adminRole);
+        $admin_2->assignRole($personalRole);
 
         User::factory()->count(100)->create()->each(function ($user) use ($personalRole) {
             $user->assignRole($personalRole);
