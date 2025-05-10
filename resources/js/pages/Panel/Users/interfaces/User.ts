@@ -15,3 +15,20 @@ export interface UsersTable {
     users: UserResource[];
     pagination: Pagination;
 }
+
+export interface StoreUserRequest {
+    name: string;
+    username: string;
+    photo: File | null;
+    email: string;
+    password: string;
+    local_id: number;
+    role: 'administrador' | 'personal';
+}
+
+export interface ResponsoUserStore {
+    success: boolean;
+    message: string;
+    redirect_url: string;
+    user: UserResource;
+}

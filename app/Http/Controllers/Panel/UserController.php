@@ -50,7 +50,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $locals = Local::where('status', true)->get();
+        $locals = Local::where('status', true)->select('id', 'name')->get();
         $roles = Role::select('name')->get();
         return Inertia::render('Panel/Users/components/createUser', [
             'locals' => $locals,
@@ -84,8 +84,9 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Usuario creado correctamente',
+            'redirect_url' => route('panel.users.index'),
             'user' => new UserResource($user),
-        ]);
+        ])->setStatusCode(201);
     }
 
     /**
