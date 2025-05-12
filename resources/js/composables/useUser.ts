@@ -53,7 +53,6 @@ export const useUser = () => {
             message.value = 'Error storing user';
         }
     };
-
     const deleteUser = async (id: number) => {
         try {
             principal.loading = true;

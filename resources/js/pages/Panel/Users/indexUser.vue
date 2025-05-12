@@ -42,7 +42,6 @@ const handlePageChange = (page: number) => {
     console.log(page);
     getUsersData(page);
 };
-
 const handleOpenModalUpdate = (user_id: number) => {
     console.log('update: ' + user_id);
 };
@@ -50,7 +49,6 @@ const handleOpenModalDelete = (user_id: number) => {
     deleteUser(user_id);
     console.log('delete: ' + user_id);
 };
-
 onMounted(() => {
     getUsersData();
 });

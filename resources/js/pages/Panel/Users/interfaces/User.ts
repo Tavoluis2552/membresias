@@ -32,7 +32,6 @@ export interface ResponsoUserStore {
     redirect_url: string;
     user: UserResource;
 }
-
 export interface ResponseUserDelete {
     success: boolean;
     message: string;
