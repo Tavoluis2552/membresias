@@ -9,6 +9,8 @@
                         :pagination="principal.pagination"
                         :loading="principal.loading"
                         @page-change="handlePageChange"
+                        @open-modal="handleOpenModalUpdate"
+                        @open-modal-delete="handleOpenModalDelete"
                     />
                 </div>
             </div>
@@ -23,7 +25,7 @@ import { Head } from '@inertiajs/vue3';
 import { onMounted } from 'vue';
 import TableUser from './components/tableUser.vue';
 
-const { principal, getUsersData } = useUser();
+const { principal, getUsersData, deleteUser } = useUser();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -39,6 +41,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 const handlePageChange = (page: number) => {
     console.log(page);
     getUsersData(page);
+};
+
+const handleOpenModalUpdate = (user_id: number) => {
+    console.log('update: ' + user_id);
+};
+const handleOpenModalDelete = (user_id: number) => {
+    deleteUser(user_id);
+    console.log('delete: ' + user_id);
 };
 
 onMounted(() => {
