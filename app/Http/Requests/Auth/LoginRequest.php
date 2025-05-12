@@ -50,7 +50,7 @@ class LoginRequest extends FormRequest
         }
         // get user
         $user = Auth::user();
-        // check if user is active
+        // check if user is activee
         if (!($user->status)) {
             Auth::logout();
             RateLimiter::hit($this->throttleKey());
