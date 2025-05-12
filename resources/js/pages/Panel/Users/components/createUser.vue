@@ -69,7 +69,7 @@
                             <FormItem>
                                 <FormLabel>Local</FormLabel>
                                 <FormControl>
-                                    <Select @update:modelValue="(id) => setFieldValue('local_id', id)">
+                                    <Select @update:modelValue="(id) => setFieldValue('local_id', id ? Number(id) : 0)">
                                         <SelectTrigger>
                                             <SelectValue placeholder="Seleccionar local" />
                                         </SelectTrigger>

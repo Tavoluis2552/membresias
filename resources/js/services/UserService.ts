@@ -1,4 +1,4 @@
-import { ResponsoUserStore, StoreUserRequest, UsersTable } from '@/pages/Panel/Users/interfaces/User';
+import { ResponseUserDelete, ResponsoUserStore, StoreUserRequest, UsersTable } from '@/pages/Panel/Users/interfaces/User';
 import axios from 'axios';
 
 export const UserService = {
@@ -14,6 +14,11 @@ export const UserService = {
                 'Content-Type': 'multipart/form-data',
             },
         });
+        return response.data;
+    },
+    // delete user
+    async deleteUser(id: number): Promise<ResponseUserDelete> {
+        const response = await axios.delete(`/panel/users/${id}`);
         return response.data;
     },
 };

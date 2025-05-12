@@ -48,7 +48,16 @@ class LoginRequest extends FormRequest
                 'username' => trans('auth.failed'),
             ]);
         }
-
+        // get user
+        $user = Auth::user();
+        // check if user is activee
+        if (!($user->status)) {
+            Auth::logout();
+            RateLimiter::hit($this->throttleKey());
+            throw ValidationException::withMessages([
+                'username' => 'Tu cuenta está inactiva. Por favor contacta al administrador.',
+            ]);
+        }
         RateLimiter::clear($this->throttleKey());
     }
 
