@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Panel\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -11,5 +12,16 @@ Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+# route group for panel
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::prefix('panel')->name('panel.')->group(function () {
+        // module users
+        Route::resource('users', UserController::class);
+        Route::get('list-users', [UserController::class, 'listUsers'])->name('list-users');
+        // end module users
+    });
+});
+
+
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';

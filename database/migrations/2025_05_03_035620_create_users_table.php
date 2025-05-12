@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Run the migrations. $table->foreignId('client_type_id')->constrained('client_types','id');
      */
     public function up(): void
     {
@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('username')->unique();
             $table->string('photo')->nullable();
             $table->string('email')->unique();
+            $table->foreignId('local_id')->constrained('locals', 'id')->onDelete('cascade');
+            $table->boolean('status')->default(true);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
