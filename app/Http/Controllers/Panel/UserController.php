@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Local;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -20,7 +23,7 @@ class UserController extends Controller
     public function listUsers()
     {
         //Gate::authorize('viewAny', User::class);
-        $users = User::with('local')->where('status', true)->paginate(10);
+        $users = User::with('local')->paginate(10);
         return response()->json([
             'success' => true,
             'users' => UserResource::collection($users),
@@ -47,7 +50,12 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $locals = Local::where('status', true)->select('id', 'name')->get();
+        $roles = Role::select('name')->get();
+        return Inertia::render('Panel/Users/components/createUser', [
+            'locals' => $locals,
+            'roles' => $roles,
+        ]);
     }
 
     /**
@@ -55,7 +63,30 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $validated['password'] = Hash::make($validated['password']);
+        $validated['status'] = true;
+        if ($validated['photo']) {
+            $validated['photo'] = $request->file('photo')->store('/users', 'public');
+            $url = url('storage/' . $validated['photo']);
+            $validated['photo'] = $url;
+        }
+        $user = User::create([
+            'name' => $validated['name'],
+            'username' => $validated['username'],
+            'photo' => $validated['photo'],
+            'email' => $validated['email'],
+            'local_id' => $validated['local_id'],
+            'password' => $validated['password'],
+            'status' => $validated['status'],
+        ]);
+        $user->assignRole($validated['role']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuario creado correctamente',
+            'redirect_url' => route('panel.users.index'),
+            'user' => new UserResource($user),
+        ])->setStatusCode(201);
     }
 
     /**
@@ -63,7 +94,10 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        return response()->json([
+            'success' => true,
+            'user' => new UserResource($user),
+        ]);
     }
 
     /**
@@ -71,7 +105,32 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        //
+        $validated = $request->validated();
+        $validated['password'] = Hash::make($validated['password']);
+        if (isset($validated['photo'])) {
+            //delete photo user
+            if ($user->photo) {
+                $path = str_replace(url('storage/'), '', $user->photo);
+                Storage::disk('public')->delete($path);
+            }
+            $validated['photo'] = $request->file('photo')->store('/users', 'public');
+            $url = url('storage/' . $validated['photo']);
+            $validated['photo'] = $url;
+        }
+        $user->update([
+            'name' => $validated['name'],
+            'username' => $validated['username'],
+            'photo' => $validated['photo'] ?? $user->photo,
+            'email' => $validated['email'],
+            'local_id' => $validated['local_id'],
+            'status' => $validated['status'],
+        ]);
+        $user->syncRoles($validated['role']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuario actualizado correctamente',
+            'user' => new UserResource($user),
+        ]);
     }
 
     /**
@@ -79,6 +138,16 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        //delete photo user
+        if ($user->photo) {
+            $path = str_replace(url('storage/'), '', $user->photo);
+            Storage::disk('public')->delete($path);
+        }
+        $user->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuario eliminado correctamente',
+            'photo' => $path,
+        ]);
     }
 }

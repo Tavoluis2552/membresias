@@ -11,7 +11,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,12 +23,13 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:100'],
-            'username' => ['required', 'string', 'max:30', 'unique:users'],
+            'username' => ['required', 'string', 'max:30', 'unique:users,username,' . $this->user->id],
             'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
-            'email' => ['required', 'email', 'unique:users'],
+            'email' => ['required', 'email', 'max:100', 'unique:users,email,' . $this->user->id],
             'password' => ['required', 'string', 'min:8'],
             'local_id' => ['required', 'exists:locals,id'],
             'status' => ['required', 'boolean'],
+            'role' => ['required', 'exists:roles,name'],
         ];
     }
 }

@@ -1,7 +1,7 @@
 import { Pagination } from '@/interfaces/paginacion';
-import { UserResource } from '@/pages/Panel/Users/interfaces/User';
+import { StoreUserRequest, UserResource } from '@/pages/Panel/Users/interfaces/User';
 import { UserService } from '@/services/UserService';
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 
 export const useUser = () => {
     const principal = reactive<{
@@ -22,7 +22,7 @@ export const useUser = () => {
         filter: '',
         loading: false,
     });
-
+    const message = ref<string>('');
     const getUsersData = async (page: number = 1, name: string = '') => {
         try {
             principal.loading = true;
@@ -39,8 +39,22 @@ export const useUser = () => {
         }
     };
 
+    const storeUser = async (user: StoreUserRequest) => {
+        try {
+            const response = await UserService.StoreUser(user);
+            if (response.success) {
+                message.value = response.message;
+                window.location.href = response.redirect_url;
+            }
+        } catch (error) {
+            console.error('Error storing user:', error);
+            message.value = 'Error storing user';
+        }
+    };
+
     return {
         principal,
         getUsersData,
+        storeUser,
     };
 };

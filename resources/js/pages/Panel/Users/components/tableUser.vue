@@ -7,24 +7,24 @@
                     <TableHeader>
                         <TableRow>
                             <TableHead>ID</TableHead>
+                            <TableHead>Foto</TableHead>
                             <TableHead>Nombre</TableHead>
                             <TableHead>Usuario</TableHead>
-                            <TableHead>Foto</TableHead>
                             <TableHead>Email</TableHead>
                             <TableHead>Local</TableHead>
                             <TableHead>Estado</TableHead>
                             <TableHead>Acciones</TableHead>
                         </TableRow>
                     </TableHeader>
-                    <TableBody>
+                    <TableBody class="cursor-pointer">
                         <TableRow v-for="user in props.usersList" :key="user.id">
                             <TableCell>{{ user.id }}</TableCell>
-                            <TableCell>{{ user.name }}</TableCell>
-                            <TableCell>{{ user.username }}</TableCell>
                             <TableCell>
-                                <img v-if="user.photo" :src="`/img/users/${user.photo}`" alt="Foto no" class="h-10 w-10 rounded-full object-cover" />
+                                <img v-if="user.photo" :src="user.photo" alt="Foto no" class="h-10 w-10 rounded-full object-cover" />
                                 <span v-else>Sin foto</span>
                             </TableCell>
+                            <TableCell>{{ user.name }}</TableCell>
+                            <TableCell>{{ user.username }}</TableCell>
                             <TableCell>{{ user.email }}</TableCell>
                             <TableCell>{{ user.local }}</TableCell>
                             <TableCell>
