@@ -9,12 +9,28 @@ export const UserService = {
     },
     // create user
     async StoreUser(data: StoreUserRequest): Promise<ResponsoUserStore> {
-        const response = await axios.post('/panel/users', data, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
-        return response.data;
+        try {
+            const response = await axios.post('/panel/users', data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            return response.data;
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                if (error.response?.status === 422) {
+                    const errors = error.response.data.errors;
+                    let errorMessage = '';
+                    for (const key in errors) {
+                        if (errors.hasOwnProperty(key)) {
+                            errorMessage += `${key}: ${errors[key].join(', ')}\n`;
+                        }
+                    }
+                    throw new Error(errorMessage);
+                }
+            }
+            throw error;
+        }
     },
     // delete user
     async deleteUser(id: number): Promise<ResponseUserDelete> {

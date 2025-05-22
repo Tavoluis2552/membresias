@@ -1,7 +1,7 @@
 import { Pagination } from '@/interfaces/paginacion';
 import { StoreUserRequest, UserResource } from '@/pages/Panel/Users/interfaces/User';
 import { UserService } from '@/services/UserService';
-import { showSuccessMessage } from '@/utils/messages';
+import { showErrorMessage, showSuccessMessage } from '@/utils/messages';
 import { reactive, ref } from 'vue';
 
 export const useUser = () => {
@@ -49,8 +49,11 @@ export const useUser = () => {
                 window.location.href = response.redirect_url;
             }
         } catch (error) {
-            console.error('Error storing user:', error);
-            message.value = 'Error storing user';
+            if (typeof error === 'object' && error !== null) {
+                const errorMessage = (error as Error).message;
+                message.value = errorMessage;
+                showErrorMessage('Error', errorMessage);
+            }
         }
     };
 
