@@ -23,7 +23,7 @@ class UserController extends Controller
     public function listUsers()
     {
         //Gate::authorize('viewAny', User::class);
-        $users = User::with('local')->paginate(10);
+        $users = User::with('local')->orderBy('id', 'asc')->paginate(10);
         return response()->json([
             'success' => true,
             'users' => UserResource::collection($users),
@@ -122,7 +122,7 @@ class UserController extends Controller
             'username' => $validated['username'],
             'photo' => $validated['photo'] ?? $user->photo,
             'email' => $validated['email'],
-            'local_id' => $validated['local_id'],
+            // 'local_id' => $validated['local_id'],
             'status' => $validated['status'],
         ]);
         $user->syncRoles($validated['role']);
